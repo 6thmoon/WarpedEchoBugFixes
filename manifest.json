@@ -1,7 +1,7 @@
 {
 	"name": "WarpedEchoBugFixes",
 	"version_number": "1.0.0",
-	"website_url": "riskofresources.com/discord",
+	"website_url": "https://www.riskofresources.com/discord",
 	"description":
 		"A comprehensive fix for this item, otherwise incompatible with several game mechanics.",
 	"dependencies": [

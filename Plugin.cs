@@ -35,18 +35,25 @@ class WarpedEchoBugFixes : BaseUnityPlugin
 		VariableDefinition flag = new(context.Import(typeof(bool)));
 
 		context.Method.Body.Variables.Add(flag);
-		int input = default, output = default;
 
 		cursor.Emit(OpCodes.Ldc_I4_0);
 		cursor.Emit(OpCodes.Stloc, flag);
 
-		Type type = typeof(DamageInfo);
+		ILLabel start = default, end = cursor.DefineLabel();
+		int input = default, output = default;
+
+		Type type = typeof(HealthComponent);
+		var protection = type.GetField(nameof(HealthComponent.ospTimer), AccessTools.all);
+
+		cursor.GotoNext(( Instruction i ) => i.MatchLdfld(protection));
+		cursor.GotoNext(( Instruction i ) => i.MatchBleUn(out start));
+
+		type = typeof(DamageInfo);
 		var rejected = type.GetField(nameof(DamageInfo.rejected));
 
-		ILLabel start = default, end = cursor.DefineLabel();
 		cursor.GotoNext(
 				( Instruction i ) => i.MatchLdfld(rejected),
-				( Instruction i ) => i.MatchBrfalse(out start),
+				( Instruction i ) => i.MatchBrfalse(out _),
 				( Instruction i ) => i.MatchRet()
 			);
 
